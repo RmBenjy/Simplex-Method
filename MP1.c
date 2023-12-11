@@ -1,121 +1,116 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//Fonction affichant la matrice
+//Function displaying the matrix
 
-void affiche(float **matrice,int ligne ,int col ){
+void displays(float **matrix, int row, int col){
 
-	int i ,j ;
-	for(i=0; i < ligne; i++){
-    	for(j = 0; j < col; j++) {
-      		printf("%.2f   ",matrice[i][j]);
-    	}
-    	printf("\n");
-  	}
-  	printf("\n");
+int i,j;
+for(i=0; i < row; i++){
+     for(j = 0; j < col; j++) {
+       printf("%.2f",matrix[i][j]);
+     }
+     printf("\n");
+   }
+   printf("\n");
 }
 
 
-int negative(float **matrice,int ligne ,int col ){
-	for(int i = 0 ; i < col ; i++){
-		if(matrice[ligne-1][i] > 0){
-			return 1 ;
+int negative(float **matrix, int row, int col){
+     for(int i = 0; i < col; i++){
+		if(matrix[row-1][i] > 0){
+			return 1;
 		}
-	}
-	return  0;
+     }
+     return 0;
 }
 
 
-int positive(float **matrice,int ligne ,int col ){
-	for(int i = 0 ; i < col ; i++){
-		if(matrice[ligne-1][i] < 0){
-			return 1 ;
-		}
+int positive(float **matrix, int row, int col){
+   for(int i = 0; i < col; i++){
+	if(matrix[row-1][i] < 0){
+		return 1;
 	}
-	return  0;
+   }
+   return 0;
 }
 
-//Fonction qui retourne un tableau avec la ligne, la colonne et la valeur du pivot
+//Function that returns an array with the row, column and pivot value
 
-int* pivot(float **matrice,int ligne ,int col )
+int* pivot(float **matrix, int row, int col)
 {
-    int ind_col_pivot;
-    int ind_ligne_pivot;
+     int ind_col_pivot;
+     int ind_row_pivot;
 
-    int *tab = (int *)malloc(2 * sizeof(int));
-
-
-    //Initialisation du pivot
-
-    float pivot=matrice[ligne-1][0];
+     int *tab = (int *)malloc(2 * sizeof(int));
 
 
+     //Initializing the pivot
 
-    //Trouver la colonne du pivot
-
-    for (int i=1;i<col;i++)
-    {
-        if (pivot<matrice[ligne-1][i])
-        {
-            pivot=matrice[ligne-1][i];
-            ind_col_pivot=i;
-        }
-    }
+     float pivot = matrix[row-1][0];
 
 
-    pivot = 10000000 ;
+     //Find the pivot column
 
-
-    //Trouver la ligne du pivot
-
-    for (int j=0;j<ligne-1;j++)
-    {
-        if (matrice[j][ind_col_pivot]!=0){
-
-
-        if (pivot>matrice[j][0]/matrice[j][ind_col_pivot]){
-
-         pivot=matrice[j][0]/matrice[j][ind_col_pivot];
-         ind_ligne_pivot=j;
-
+     for (int i = 1; i < col ; i++)
+     {
+         if (pivot < matrix[row-1][i])
+         {
+             pivot = matrix[row-1][i];
+             ind_col_pivot=i;
          }
      }
-     }
 
 
-     //On remplit un tableau avec les indices et la valeur du pivot pour les utiliser plus tard
+     pivot = 10000000;
 
-     tab[0]=ind_ligne_pivot;
-     tab[1]=ind_col_pivot;
 
-     return tab;
+     //Find the pivot row
+
+     for (int j = 0 ; j < row-1 ;j++)
+     {
+         if (matrix[j][ind_col_pivot] != 0){
+
+
+         if (pivot > matrix[j][0]/matrix[j][ind_col_pivot]){
+
+          pivot = matrix[j][0]/matrix[j][ind_col_pivot];
+          ind_row_pivot =j ;
+
+          }
+      }
+      }
+
+
+      //We fill an array with the indices and the pivot value to use them later
+
+      tab[0] = ind_row_pivot;
+      tab[1] = ind_col_pivot;
+
+      return tab;
 
 
 }
 
-
-void matrice_simplex(float **matrice, int ligne , int col)
+void simplex_matrix(float **matrix, int row , int col)
 {
-    int ligne1;
-    int colonne;
+    int row1;
+    int column;
 
-    int *p=pivot(matrice,ligne ,col );
-    colonne=p[1];
-    ligne1=p[0];
+    int *p = pivot(matrix, row ,col );
+    column = p[1];
+    row1 = p[0];
 
-
-    float pivot = matrice[ligne1][colonne];
-
+    float pivot = matrix[row1][column];
 
 
-
-    for(int i=0;i<ligne;i++)
+    for(int i = 0; i < row ; i++)
     {
-        for(int j=0;j<col;j++)
+        for(int j = 0; j < col; j++)
         {
-            if (i!=ligne1 && j!=colonne )//autre que ligne et colonne du pivot
+            if (i != row1 && j != column ) 
 
-                matrice[i][j] -= (matrice[i][colonne] * matrice[ligne1][j]) / pivot ;
+                matrix[i][j] -= (matrix[i][column] * matrix[row1][j]) / pivot ;
 
 
         }
@@ -127,45 +122,46 @@ void matrice_simplex(float **matrice, int ligne , int col)
 
 
 }
-void methode_simplex(float **matrice,int ligne ,int col ,int *solution)
+
+void simplex_methode(float **matrix, int row , int col , int *solution)
 {
-    int ligne1;
-    int colonne;
+    int row1;
+    int column;
 
-    int *p=pivot(matrice,ligne ,col );
-
-
-    colonne=p[1];
-    ligne1=p[0];
-
-    float pivot = matrice[ligne1][colonne];
+    int *p = pivot(matrix, row ,col );
 
 
-    solution[colonne-1]=ligne1;
+    column =p [1];
+    row1 = p[0];
+
+    float pivot = matrix[row1][column];
 
 
-
-    matrice_simplex(matrice, ligne, col);
+    solution[column-1] = row1;
 
 
 
-    for(int i=0;i<col;i++)
+    simplex_matrix(matrix, row, col);
+
+
+
+    for(int i = 0; i < col; i++)
     {
-            matrice[ligne1][i]=matrice[ligne1][i]/pivot;
+            matrix[row1][i] = matrix[row1][i]/pivot;
 
     }
-        for(int i=0;i<ligne;i++)
+        for(int i = 0; i< row; i++)
     {
-        if (i!=ligne1)
-            matrice[i][colonne]=0;
+        if (i != row1)
+            matrix[i][column] = 0;
     }
 
 
-    affiche(matrice , ligne , col) ;
+    affiche(matrix , row , col) ;
 
 
-    if (negative(matrice,ligne,col) )
-        methode_simplex(matrice,ligne ,col ,solution);
+    if (negative(matrix, row, col) )
+        simplex_methode(matrix, row, col, solution);
 
 
 
@@ -174,125 +170,116 @@ void methode_simplex(float **matrice,int ligne ,int col ,int *solution)
 
 
 
-
-
-
-
-
-int* pivot1(float **matrice,int ligne ,int col )
+int* pivot1(float **matrix,int row,int col)
 {
-    int ind_col_pivot;
-    int ind_ligne_pivot;
+     int ind_col_pivot;
+     int ind_row_pivot;
 
-    int *tab = (int *)malloc(2 * sizeof(int));
-
-
-    //Initialisation du pivot
-
-    float pivot=matrice[ligne-1][0];
+     int *tab = (int *)malloc(2 * sizeof(int));
 
 
+     //Initializing the pivot
 
-    //Trouver la colonne du pivot
-
-    for (int i=1;i<col;i++)
-    {
-        if (pivot>matrice[ligne-1][i])
-        {
-            pivot=matrice[ligne-1][i];
-            ind_col_pivot=i;
-        }
-    }
+     float pivot = matrix[row-1][0];
 
 
-    pivot = 10000000 ;
 
+     //Find the pivot column
 
-    //Trouver la ligne du pivot
-
-    for (int j=0;j<ligne-1;j++)
-    {
-        if (matrice[j][ind_col_pivot]!=0){
-
-
-        if (pivot>matrice[j][0]/matrice[j][ind_col_pivot]){
-
-         pivot=matrice[j][0]/matrice[j][ind_col_pivot];
-         ind_ligne_pivot=j;
-
+     for (int i = 1; i < col; i++)
+     {
+         if (pivot > matrix[row-1][i])
+         {
+             pivot = matrix[row-1][i];
+             ind_col_pivot = i;
          }
      }
+
+
+     pivot = 10000000;
+
+
+     //Find the pivot line
+
+     for (int j = 0; j < row-1; j++)
+     {
+         if (matrix[j][ind_col_pivot] != 0){
+
+         if (pivot > matrix[j][0]/matrix[j][ind_col_pivot]){
+
+          pivot = matrix[j][0]/matrix[j][ind_col_pivot];
+          ind_row_pivot = j;
+
+          }
+      }
+      }
+
+
+      //We fill an array with the indices and the pivot value to use them later
+
+      tab[0] = ind_row_pivot;
+      tab[1] = ind_col_pivot;
+
+      return tab;
+
+
+}
+void method_simplex1(float **matrix, int row, int col, int *solution)
+{
+     int row1;
+     int column;
+
+     int *p = pivot1(matrix,row,col);
+
+
+     column = p[1];
+     row1 = p[0];
+
+     float pivot = matrix[row1][column];
+
+
+     solution[column-1] = row1;
+
+
+
+     simplex_matrix(matrix, row, col);
+
+
+     for(int i = 0; i < col; i++)
+     {
+             matrix[row1][i] = matrix[row1][i]/pivot;
+
+     }
+         for(int i = 0; i< row; i++)
+     {
+         if (i != row1)
+             matrix[i][column]=0;
      }
 
+     int r=0, v=1, q=2;
+     printf("%d",r);
 
-     //On remplit un tableau avec les indices et la valeur du pivot pour les utiliser plus tard
+     displays(matrix, row, col);
 
-     tab[0]=ind_ligne_pivot;
-     tab[1]=ind_col_pivot;
+     printf("%d",v);
 
-     return tab;
+
+     if (positive(matrix,row,col) != 0)
+         method_simplex1(matrix, row, col, solution);
+
+
+     printf("%d",q);
 
 
 }
-void methode_simplex1(float **matrice,int ligne ,int col ,int *solution)
+void make_matrix_negative(float **matrix, int row, int col)
 {
-    int ligne1;
-    int colonne;
-
-    int *p=pivot1(matrice,ligne ,col );
-
-
-    colonne=p[1];
-    ligne1=p[0];
-
-    float pivot = matrice[ligne1][colonne];
-
-
-    solution[colonne-1]=ligne1;
-
-
-
-    matrice_simplex(matrice, ligne, col);
-
-
-    for(int i=0;i<col;i++)
-    {
-            matrice[ligne1][i]=matrice[ligne1][i]/pivot;
-
-    }
-        for(int i=0;i<ligne;i++)
-    {
-        if (i!=ligne1)
-            matrice[i][colonne]=0;
-    }
-
-    int r=0,v=1,q=2;
-    printf("%d",r);
-
-    affiche(matrice , ligne , col) ;
-
-    printf("%d",v);
-
-
-    if (positive(matrice,ligne,col)!=0 )
-        methode_simplex1(matrice,ligne ,col ,solution);
-
-
-    printf("%d",q);
-
-
+     int i, j;
+     for (i = 0; i < row; i++)
+     {
+         for (j = 0; j < (row-col+1); j++)
+         {
+             matrix[i][j] *= -1;
+         }
+     }
 }
-
-void rendre_matrice_negative(float **matrice, int ligne, int col)
-{
-    int i, j;
-    for (i = 0; i < ligne; i++)
-    {
-        for (j = 0; j < (col-ligne+1); j++)
-        {
-            matrice[i][j] *= -1;
-        }
-    }
-}
-
-
