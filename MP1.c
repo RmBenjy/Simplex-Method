@@ -123,7 +123,7 @@ void simplex_matrix(float **matrix, int row , int col)
 
 }
 
-void simplex_methode(float **matrix, int row , int col , int *solution)
+void simplex_method(float **matrix, int row , int col , int *solution)
 {
     int row1;
     int column;
@@ -157,7 +157,7 @@ void simplex_methode(float **matrix, int row , int col , int *solution)
     }
 
 
-    affiche(matrix , row , col) ;
+    displays(matrix , row , col) ;
 
 
     if (negative(matrix, row, col) )
